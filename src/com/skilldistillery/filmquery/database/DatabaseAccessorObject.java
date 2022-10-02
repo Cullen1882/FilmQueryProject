@@ -31,7 +31,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		String pass = "student";
 		try{
 			Connection conn = DriverManager.getConnection(URL, user, pass);
-		String sql = "SELECT * FROM film WHERE id = ?";
+		String sql = "SELECT * FROM film JOIN language ON film.language_id = language.id WHERE film.id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, filmId);
 		ResultSet rs = stmt.executeQuery();
@@ -43,6 +43,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setDesc(rs.getString("description"));
 			film.setRelYear(rs.getInt("release_year"));
 			film.setLangId(rs.getInt("language_id"));
+			film.setLang(rs.getString("name"));
 			film.setRentDur(rs.getInt("rental_duration"));
 			film.setRentRate(rs.getDouble("rental_rate"));
 			film.setLength(rs.getInt("length"));
@@ -73,7 +74,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
 
-			String sql = "SELECT * FROM actor WHERE id = ? ";
+			String sql = "SELECT * FROM actor WHERE actor.id = ? ";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, actorId);
 			ResultSet rs = stmt.executeQuery();
@@ -133,7 +134,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		String pass = "student";
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
-			String sql = "SELECT * FROM film JOIN film_actor ON film.id = film_actor.film_id JOIN actor ON actor.id = film_actor.actor_id WHERE actor.id = ?";
+			String sql = "SSELECT * FROM film JOIN film_actor ON film.id = film_actor.film_id JOIN actor ON actor.id = film_actor.actor_id JOIN language ON film.language_id = language.id  WHERE actor.id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1,actorId);
 			ResultSet rs = stmt.executeQuery();
@@ -145,6 +146,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setDesc(rs.getString("description"));
 				film.setRelYear(rs.getInt("release_year"));
 				film.setLangId(rs.getInt("language_id"));
+				film.setLang(rs.getString("name"));
 				film.setRentDur(rs.getInt("rental_duration"));
 				film.setRentRate(rs.getDouble("rental_rate"));
 				film.setLength(rs.getInt("length"));
@@ -160,5 +162,46 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			e.printStackTrace();
 		}
 		return filmList;
+	}
+
+	@Override
+	public List<Film> findFilmByKeyword(String key) {
+		List<Film> keyFilms = new ArrayList<>();
+		
+		String user = "student";
+		String pass = "student";
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			String sql = "SELECT * FROM film JOIN language ON film.language_id = language.id WHERE title LIKE ? OR description LIKE ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%" + key + "%");
+			stmt.setString(2, "%" + key + "%");
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Film film = new Film();
+
+				film.setId(rs.getInt("id"));
+				film.setTitle(rs.getString("title"));
+				film.setDesc(rs.getString("description"));
+				film.setRelYear(rs.getInt("release_year"));
+				film.setLangId(rs.getInt("language_id"));
+				film.setLang(rs.getString("name"));
+				film.setRentDur(rs.getInt("rental_duration"));
+				film.setRentRate(rs.getDouble("rental_rate"));
+				film.setLength(rs.getInt("length"));
+				film.setRepCost(rs.getDouble("replacement_cost"));
+				film.setRating(rs.getString("rating"));
+				film.setSpecFeat(rs.getString("special_features"));
+				film.setCast(findActorsByFilmId(rs.getInt("id")));
+				keyFilms.add(film);
+			}
+			rs.close();
+			stmt.close();
+			conn.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return keyFilms;
 	}
 }

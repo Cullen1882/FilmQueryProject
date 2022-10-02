@@ -10,6 +10,7 @@ public class Film {
 	private String desc;
 	private int relYear;
 	private int langId;
+	private String lang;
 	private int rentDur;
 	private double rentRate;
 	private int length;
@@ -71,6 +72,14 @@ public class Film {
 	public void setLangId(int langId) {
 		this.langId = langId;
 	}
+	
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
 
 	public int getRentDur() {
 		return rentDur;
@@ -130,7 +139,8 @@ public class Film {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(desc, fId, langId, length, rating, relYear, rentDur, rentRate, repCost, specFeat, title);
+		return Objects.hash(cast, desc, fId, lang, langId, length, rating, relYear, rentDur, rentRate, repCost,
+				specFeat, title);
 	}
 
 	@Override
@@ -142,11 +152,26 @@ public class Film {
 		if (getClass() != obj.getClass())
 			return false;
 		Film other = (Film) obj;
-		return Objects.equals(desc, other.desc) && fId == other.fId && langId == other.langId && length == other.length
+		return Objects.equals(cast, other.cast) && Objects.equals(desc, other.desc) && fId == other.fId
+				&& Objects.equals(lang, other.lang) && langId == other.langId && length == other.length
 				&& Objects.equals(rating, other.rating) && relYear == other.relYear && rentDur == other.rentDur
 				&& Double.doubleToLongBits(rentRate) == Double.doubleToLongBits(other.rentRate)
 				&& Double.doubleToLongBits(repCost) == Double.doubleToLongBits(other.repCost)
 				&& Objects.equals(specFeat, other.specFeat) && Objects.equals(title, other.title);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Film Title: ").append(title).append("\n").append("Description: ").append(desc).append("\n").append("Year Released: ").append(relYear)
+				.append("\n").append("Language: ").append(lang).append("\n").append("Rating: ").append(rating).append("\n").append("Cast: \n");
+		for (Actor actor : cast) {
+			builder.append(actor.getFirstName()).append(" ").append(actor.getLastName()).append("\n");
+			
+			
+		}
+		
+		return builder.toString();
 	}
 
 	
