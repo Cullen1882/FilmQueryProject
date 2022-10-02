@@ -1,5 +1,6 @@
 package com.skilldistillery.filmquery.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,25 +19,25 @@ public class Film {
 	private List<Actor> cast;
 
 	public Film() {
-
+		cast = new ArrayList<>();
 	}
 
-	public Film(int id) {
-		super();
-		this.fId = id;
-	}
-
-	public Film(String title) {
-		super();
-		this.title = title;
-	}
+//	public Film(int id) {
+//		super();
+//		this.fId = id;
+//	}
+//
+//	public Film(String title) {
+//		super();
+//		this.title = title;
+//	}
 
 	public int getId() {
-		return id;
+		return fId;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.fId = id;
 	}
 
 	public String getTitle() {
@@ -148,11 +149,6 @@ public class Film {
 				&& Objects.equals(specFeat, other.specFeat) && Objects.equals(title, other.title);
 	}
 
-	@Override
-	public String toString() {
-		return "Film [id=" + id + ", title=" + title + ", desc=" + desc + ", relYear=" + relYear + ", langId=" + langId
-				+ ", rentDur=" + rentDur + ", rentRate=" + rentRate + ", length=" + length + ", repCost=" + repCost
-				+ ", rating=" + rating + ", specFeat=" + specFeat + "]";
-	}
+	
 
-}  
+}
